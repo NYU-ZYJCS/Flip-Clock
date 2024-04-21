@@ -16,6 +16,8 @@ public class TimeDemo extends JDialog {
     Point initialClick;
     // Default weather location
     private String location = "New_York";
+
+    private String weatherCondition = "null";
     // Weather printer instance
     private WeatherPrinter weatherPrinter;
 
@@ -50,7 +52,7 @@ public class TimeDemo extends JDialog {
         // Set the weather label
         weatherLabel = new JLabel("");
         weatherLabel.setForeground(new Color(255, 255, 255));
-        weatherLabel.setFont(new Font(DIALOG, Font.BOLD, 25));
+        weatherLabel.setFont(new Font(DIALOG, Font.BOLD, 20));
 
         // Set the weather image label
         imageLabel = new JLabel();
@@ -58,9 +60,10 @@ public class TimeDemo extends JDialog {
         imageLabel.setVerticalAlignment(JLabel.CENTER);
 
         // Load the weather image
-        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/miami.JPG"));
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("WeatherIcon/sunny_clear.png"));
         Image img = imgIcon.getImage();
-        Image scaledImg = img.getScaledInstance(50, 50,  Image.SCALE_SMOOTH);
+
+        Image scaledImg = img.getScaledInstance(80, 80,  Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(scaledImg));
 
         // Add labels to content pane
