@@ -1,99 +1,184 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import static java.awt.Font.DIALOG;
+import javax.swing.*;
 
 public class TimeDemo extends JDialog {
-    JLabel label1;
-    JLabel label2;
-    TrayIcon trayIcon = null; // 托盘图标
-    Point initialClick; // 鼠标按下时的坐标点
+    // Label for displaying the time
+    JLabel timeLabel;
+    // Label for displaying the weather
+    JLabel weatherLabel;
+    // Label for displaying the weather image
+    private JLabel imageLabel;
+    // System tray icon
+    TrayIcon trayIcon = null;
+    // Point for storing the initial click coordinates
+    Point initialClick;
+    // Default weather location
+    private String location = "New_York";
+    // Weather printer instance
+    private WeatherPrinter weatherPrinter;
 
     public TimeDemo() {
+        // Set the window properties
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
         setSize(500, 200);
-        setLayout(null);
+        setLayout(new BorderLayout());
 
-        label1 = new JLabel("");
-        label2 = new JLabel("");
-        label1.setForeground(new Color(255, 255, 255));
-        label2.setForeground(new Color(255, 255, 255));
-        label1.setBounds(0, 0, 500, 100);
-        label2.setBounds(0, 100, 500, 100);
-        label1.setFont(new Font(DIALOG, Font.BOLD, 100));
-        label2.setFont(new Font(DIALOG, Font.BOLD, 40));
+        // Initialize the UI components
+        initializeUI();
 
-        getContentPane().add(label1);
-        getContentPane().add(label2);
+        // Initialize the time printer and start its thread
+        TimePrinter printer = new TimePrinter(timeLabel);
+        Thread timeThread = new Thread(printer);
+        timeThread.start();
 
-        // 加载图标资源
-        ImageIcon arrowIcon = null;
-        java.net.URL imgURL = TimeDemo.class.getResource("/image.jpg");
-        if (imgURL != null) {
-            arrowIcon = new ImageIcon(imgURL);
-            setIconImage(arrowIcon.getImage());
-        } else {
-            JOptionPane.showMessageDialog(this, "Icon image not found.");
-        }
+        // Initialize the weather printer and start its thread
+        weatherPrinter = new WeatherPrinter(weatherLabel, location);
+        Thread weatherThread = new Thread(weatherPrinter);
+        weatherThread.start();
 
-        // 设置系统托盘图标和菜单
+    }
+
+    private void initializeUI() {
+        // Set the time label
+        timeLabel = new JLabel("");
+        timeLabel.setForeground(new Color(255, 255, 255));
+        timeLabel.setFont(new Font(DIALOG, Font.BOLD, 80));
+
+        // Set the weather label
+        weatherLabel = new JLabel("");
+        weatherLabel.setForeground(new Color(255, 255, 255));
+        weatherLabel.setFont(new Font(DIALOG, Font.BOLD, 25));
+
+        // Set the weather image label
+        imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        imageLabel.setVerticalAlignment(JLabel.CENTER);
+
+        // Load the weather image
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/miami.JPG"));
+        Image img = imgIcon.getImage();
+        Image scaledImg = img.getScaledInstance(50, 50,  Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledImg));
+
+        // Add labels to content pane
+        JPanel weatherPanel = new JPanel();
+        weatherPanel.setLayout(new BorderLayout());
+        weatherPanel.add(imageLabel, BorderLayout.WEST);
+        weatherPanel.add(weatherLabel, BorderLayout.CENTER);
+        // Make the panel transparent
+        weatherPanel.setOpaque(false);
+
+        // Add components to main window
+        add(timeLabel, BorderLayout.NORTH);
+        add(weatherPanel, BorderLayout.CENTER);
+
+        // Set up the system tray
+        setupSystemTray();
+
+        // Set up the mouse listeners
+        setupMouseListeners();
+    }
+
+    // Set up the system tray
+    private void setupSystemTray() {
+        // Set the icon image
+        java.net.URL imgURL = TimeDemo.class.getResource("/icon.jpg");
+        ImageIcon imageIcon = new ImageIcon(imgURL);
+
+        // Create a system tray icon
         SystemTray tray = SystemTray.getSystemTray();
-        ImageIcon icon = new ImageIcon(imgURL);
+
+        // Create a popup menu
         PopupMenu pop = new PopupMenu();
-        MenuItem exit = new MenuItem("exit");
-        pop.add(exit);
-        trayIcon = new TrayIcon(icon.getImage(), "时钟", pop);
-        exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+
+        // Menu Item: set location
+        MenuItem setLocationItem = new MenuItem("Set Location");
+        setLocationItem.addActionListener(e -> promptForLocation());
+        pop.add(setLocationItem);
+
+        // Menu Item: exit
+        MenuItem exitItem = new MenuItem("Exit");
+        exitItem.addActionListener(e -> System.exit(0));
+        pop.add(exitItem);
+
+        // Add the image and popup menu to the tray icon
+        trayIcon = new TrayIcon(imageIcon.getImage(), "Clock", pop);
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
             e.printStackTrace();
         }
+    }
 
-        // 添加鼠标侦听器到整个窗口
+    // Set up the mouse listeners
+    private void setupMouseListeners() {
+        // Add a mouse listener to the window
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 initialClick = e.getPoint();
             }
         });
 
-        // 添加鼠标运动侦听器到整个窗口
+        // Add a mouse motion listener to the window
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                // 获取窗口当前位置
+                // Get the current cursor location
                 int thisX = getLocation().x;
                 int thisY = getLocation().y;
 
-                // 计算鼠标移动的距离
+                // Compute the distance moved by the cursor
                 int xMoved = e.getX() - initialClick.x;
                 int yMoved = e.getY() - initialClick.y;
 
-                // 移动窗口到新位置
+                // Move window to the new position
                 int X = thisX + xMoved;
                 int Y = thisY + yMoved;
                 setLocation(X, Y);
             }
         });
+    }
 
-        // 启动更新时间和天气的线程
-        TimePrinter printer = new TimePrinter(label1);
-        Thread thread1 = new Thread(printer);
-        thread1.start();
+    // Prompt for the user to enter a new location
+    private void promptForLocation() {
+        while (true) {
+            String newLocation = JOptionPane.showInputDialog(this, "Enter a City Name (Use Letters Only):", "Set Location", JOptionPane.QUESTION_MESSAGE);
 
-        WeatherPrinter weatherPrinter = new WeatherPrinter(label2);
-        Thread thread2 = new Thread(weatherPrinter);
-        thread2.start();
+            if (newLocation == null) {
+                break;
+            }
+            newLocation = newLocation.trim();
+
+            if (newLocation.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Input cannot be empty. Please enter a valid city name.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+
+            if (!newLocation.matches("[A-Za-z\\s]+")) {
+                JOptionPane.showMessageDialog(this, "Invalid input. Please enter letters only.", "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+
+            newLocation = newLocation.toLowerCase().replaceAll("\\s+", "_");
+
+            // Update the location
+            location = newLocation;
+            break;
+        }
+
+        // Update the location in the weather thread
+        if (location != null && !location.isEmpty()) {
+            weatherPrinter.setCity(location);
+            weatherLabel.setText("Updating weather for " + location + "...");
+        }
     }
 
     public static void main(String[] args) {
         TimeDemo timeDemo = new TimeDemo();
+        // Set the window to be visible
         timeDemo.setVisible(true);
     }
 }

@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.time.LocalTime;
+import javax.swing.*;
 
 public class TimePrinter implements Runnable{
     JLabel label = null;
@@ -16,7 +16,6 @@ public class TimePrinter implements Runnable{
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                // TODO 自动生成的 catch 块
                 e.printStackTrace();
             }
         }
