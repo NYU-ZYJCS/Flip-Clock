@@ -17,9 +17,9 @@ public class TimeDemo extends JDialog {
     // Default weather location
     private String location = "New_York";
 
-    private String weatherCondition = "null";
     // Weather printer instance
-    private WeatherPrinter weatherPrinter;
+    private final WeatherPrinter weatherPrinter;
+    private final TimePrinter timePrinter;
 
     public TimeDemo() {
         // Set the window properties
@@ -32,12 +32,12 @@ public class TimeDemo extends JDialog {
         initializeUI();
 
         // Initialize the time printer and start its thread
-        TimePrinter printer = new TimePrinter(timeLabel);
-        Thread timeThread = new Thread(printer);
+        timePrinter = new TimePrinter(timeLabel, location);
+        Thread timeThread = new Thread(timePrinter);
         timeThread.start();
 
         // Initialize the weather printer and start its thread
-        weatherPrinter = new WeatherPrinter(weatherLabel, location);
+        weatherPrinter = new WeatherPrinter(weatherLabel, imageLabel, location);
         Thread weatherThread = new Thread(weatherPrinter);
         weatherThread.start();
 
@@ -45,7 +45,9 @@ public class TimeDemo extends JDialog {
 
     private void initializeUI() {
         // Set the time label
+
         timeLabel = new JLabel("");
+        timeLabel.setOpaque(false);
         timeLabel.setForeground(new Color(255, 255, 255));
         timeLabel.setFont(new Font(DIALOG, Font.BOLD, 80));
 
@@ -59,13 +61,6 @@ public class TimeDemo extends JDialog {
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setVerticalAlignment(JLabel.CENTER);
 
-        // Load the weather image
-        ImageIcon imgIcon = new ImageIcon(getClass().getResource("WeatherIcon/sunny_clear.png"));
-        Image img = imgIcon.getImage();
-
-        Image scaledImg = img.getScaledInstance(80, 80,  Image.SCALE_SMOOTH);
-        imageLabel.setIcon(new ImageIcon(scaledImg));
-
         // Add labels to content pane
         JPanel weatherPanel = new JPanel();
         weatherPanel.setLayout(new BorderLayout());
@@ -73,6 +68,7 @@ public class TimeDemo extends JDialog {
         weatherPanel.add(weatherLabel, BorderLayout.CENTER);
         // Make the panel transparent
         weatherPanel.setOpaque(false);
+
 
         // Add components to main window
         add(timeLabel, BorderLayout.NORTH);
@@ -88,8 +84,7 @@ public class TimeDemo extends JDialog {
     // Set up the system tray
     private void setupSystemTray() {
         // Set the icon image
-        java.net.URL imgURL = TimeDemo.class.getResource("/icon.jpg");
-        ImageIcon imageIcon = new ImageIcon(imgURL);
+        ImageIcon imageIcon = new ImageIcon(TimeDemo.class.getResource("/icon.jpg"));
 
         // Create a system tray icon
         SystemTray tray = SystemTray.getSystemTray();
@@ -176,6 +171,7 @@ public class TimeDemo extends JDialog {
         if (location != null && !location.isEmpty()) {
             weatherPrinter.setCity(location);
             weatherLabel.setText("Updating weather for " + location + "...");
+            timePrinter.setCity(location);
         }
     }
 
