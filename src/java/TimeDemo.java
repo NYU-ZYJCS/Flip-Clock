@@ -21,6 +21,8 @@ public class TimeDemo extends JDialog {
     private final WeatherPrinter weatherPrinter;
     private final TimePrinter timePrinter;
 
+
+
     public TimeDemo() {
         // Set the window properties
         setUndecorated(true);
@@ -43,34 +45,51 @@ public class TimeDemo extends JDialog {
 
     }
 
-    private void initializeUI() {
-        // Set the time label
+    static class FlickerFreeLabel extends JLabel {
+        public FlickerFreeLabel(String text) {
+            super(text);
+            setOpaque(false);  // Set the label to be non-opaque to maintain transparency
+        }
 
-        timeLabel = new JLabel("");
-        timeLabel.setOpaque(false);
+        @Override
+        protected void paintComponent(Graphics g) {
+            // Ensure the text antialiasing is on for better text rendering
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            super.paintComponent(g);  // Only call super to paint the label text
+        }
+    }
+
+
+
+
+    private void initializeUI() {
+        // Setup time label with FlickerFreeLabel
+        timeLabel = new FlickerFreeLabel("");
         timeLabel.setForeground(new Color(255, 255, 255));
         timeLabel.setFont(new Font(DIALOG, Font.BOLD, 80));
+        timeLabel.setOpaque(false);
 
-        // Set the weather label
-        weatherLabel = new JLabel("");
+        // Setup weather label similarly
+        weatherLabel = new FlickerFreeLabel("");
         weatherLabel.setForeground(new Color(255, 255, 255));
         weatherLabel.setFont(new Font(DIALOG, Font.BOLD, 20));
+        weatherLabel.setOpaque(false);
 
-        // Set the weather image label
-        imageLabel = new JLabel();
+        // Weather image label setup
+        imageLabel = new FlickerFreeLabel("");
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setVerticalAlignment(JLabel.CENTER);
+        imageLabel.setOpaque(false);
 
-        // Add labels to content pane
-        JPanel weatherPanel = new JPanel();
-        weatherPanel.setLayout(new BorderLayout());
+        // Panel for weather and image labels
+        JPanel weatherPanel = new JPanel(new BorderLayout());
         weatherPanel.add(imageLabel, BorderLayout.WEST);
         weatherPanel.add(weatherLabel, BorderLayout.CENTER);
-        // Make the panel transparent
-        weatherPanel.setOpaque(false);
+        weatherPanel.setOpaque(false);  // Ensure the panel does not paint its background
 
-
-        // Add components to main window
+        // Add components to the dialog
         add(timeLabel, BorderLayout.NORTH);
         add(weatherPanel, BorderLayout.CENTER);
 
@@ -136,6 +155,7 @@ public class TimeDemo extends JDialog {
                 int X = thisX + xMoved;
                 int Y = thisY + yMoved;
                 setLocation(X, Y);
+                TimeDemo.this.repaint();
             }
         });
     }
@@ -172,12 +192,12 @@ public class TimeDemo extends JDialog {
             weatherPrinter.setCity(location);
             weatherLabel.setText("Updating weather for " + location + "...");
             timePrinter.setCity(location);
+            TimeDemo.this.repaint();
         }
     }
 
     public static void main(String[] args) {
         TimeDemo timeDemo = new TimeDemo();
-        // Set the window to be visible
         timeDemo.setVisible(true);
     }
 }

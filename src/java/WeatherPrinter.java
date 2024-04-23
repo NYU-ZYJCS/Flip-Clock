@@ -49,7 +49,10 @@ public class WeatherPrinter implements Runnable {
             String weatherCondition = extractWeatherCondition(response.body());
             String updatedWeather = city + ": " + response.body();
             SwingUtilities.invokeLater(() -> {
+                weatherLabel.repaint();
                 weatherLabel.setText(updatedWeather);
+                weatherLabel.revalidate();
+                weatherLabel.repaint();
                 updateWeatherIcon(weatherCondition);
             });
         } catch (IOException | InterruptedException e) {
@@ -104,7 +107,10 @@ public class WeatherPrinter implements Runnable {
             Image img = imgIcon.getImage();
 
             Image scaledImg = img.getScaledInstance(80, 80,  Image.SCALE_SMOOTH);
+            imageLabel.repaint();
             imageLabel.setIcon(new ImageIcon(scaledImg));
+            imageLabel.revalidate();
+            imageLabel.repaint();
         }
     }
 

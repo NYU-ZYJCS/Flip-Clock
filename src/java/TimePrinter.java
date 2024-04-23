@@ -18,6 +18,7 @@ public class TimePrinter implements Runnable {
     private volatile boolean shouldUpdate = true;
 
     public TimePrinter(JLabel label, String city) {
+
         this.timeLabel = label;
         this.city = city.replace(" ", "_");
         updateZoneId();
@@ -63,11 +64,10 @@ public class TimePrinter implements Runnable {
             String timeText = zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
             SwingUtilities.invokeLater(() -> {
-                timeLabel.setText("");
                 timeLabel.setText(timeText);
-                timeLabel.repaint();
+                timeLabel.revalidate(); // to ensure layout is updated
+                timeLabel.repaint();    // to repaint the label
             });
-
 
 
             try {
