@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -163,9 +164,6 @@ public class Demo extends JDialog {
 
     // Set up the system tray
     private void setupSystemTray() {
-        // Create a system tray icon
-        SystemTray tray = SystemTray.getSystemTray();
-
         // Create a popup menu
         PopupMenu pop = new PopupMenu();
         // Menu Item: Set Location
@@ -174,16 +172,8 @@ public class Demo extends JDialog {
         setPreferenceToPopMenu(pop);
         // Menu Item: Exit
         setExitToPopMenu(pop);
-
-        // Set the icon image
-        ImageIcon imageIcon = new ImageIcon(Demo.class.getResource("/icon.jpg"));
-        // Add the image and popup menu to the tray icon
-        trayIcon = new TrayIcon(imageIcon.getImage(), "Widget", pop);
-        try {
-            tray.add(trayIcon);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        // Initialize and add the system tray icon
+        initializeTrayIcon(pop);
     }
 
     // Add the Set Location menu item to the popup menu
@@ -197,6 +187,8 @@ public class Demo extends JDialog {
     private void setPreferenceToPopMenu(PopupMenu pop) {
         // Menu Item: Preferences Menu
         Menu preferences = new Menu("Preferences");
+        // Submenu Item: Set Icon Submenu
+        setIconSubmenu(preferences);
         // Submenu Item: Set Font Submenu
         setFontSubmenu(preferences);
         // Submenu Item: Set Size Submenu
@@ -204,6 +196,27 @@ public class Demo extends JDialog {
         // Submenu Item: Set Color Submenu
         setColorSubmenu(preferences);
         pop.add(preferences);
+    }
+
+    // Set Icon Submenu
+    private void setIconSubmenu(Menu preferences) {
+        Menu iconSubmenu = new Menu("Set Icon");
+
+        // Menu items for icon styles
+        Map<String, String> iconStyles = new HashMap<>();
+        iconStyles.put("Simple", "MenubarIcon/simpleIcon.png");
+        iconStyles.put("Cartoon", "MenubarIcon/cartoonIcon.png");
+        iconStyles.put("Artistic", "MenubarIcon/artisticIcon.png");
+
+        // Create and add menu items to the submenu
+        for (Map.Entry<String, String> entry : iconStyles.entrySet()) {
+            MenuItem iconItem = new MenuItem(entry.getKey());
+            String iconPath = entry.getValue();
+            iconItem.addActionListener(e -> updateTrayIcon(iconPath));
+            iconSubmenu.add(iconItem);
+        }
+
+        preferences.add(iconSubmenu);
     }
 
     // Set Font Submenu
@@ -266,6 +279,31 @@ public class Demo extends JDialog {
         MenuItem exitItem = new MenuItem("Exit");
         exitItem.addActionListener(e -> System.exit(0));
         pop.add(exitItem);
+    }
+
+    // Initialize and set the system tray icon
+    private void initializeTrayIcon(PopupMenu pop) {
+        SystemTray tray = SystemTray.getSystemTray();
+
+        // Set the default icon image
+        ImageIcon imageIcon = new ImageIcon(Demo.class.getResource("MenubarIcon/simpleIcon.png"));
+        // Add the image and popup menu to the tray icon
+        trayIcon = new TrayIcon(imageIcon.getImage(), "Widget", pop);
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to update the system tray icon
+    private void updateTrayIcon(String iconPath) {
+        URL imageUrl = Demo.class.getResource(iconPath);
+        if (imageUrl != null) {
+            ImageIcon newIcon = new ImageIcon(imageUrl);
+            trayIcon.setImage(newIcon.getImage());
+            trayIcon.setImageAutoSize(true); // Optional: Resize the image if needed
+        }
     }
 
     // Update the font of the labels
