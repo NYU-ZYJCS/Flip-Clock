@@ -15,6 +15,8 @@ public class WeatherPrinter implements Runnable {
     private volatile String city;
     private final HttpClient client;
     private boolean shouldUpdate = true;
+    private volatile int currentImageSize = 80;
+    private String lastWeatherCondition = "";
 
     public WeatherPrinter(JLabel weatherLabel, JLabel imageLabel, String location) {
         this.weatherLabel = weatherLabel;
@@ -23,6 +25,10 @@ public class WeatherPrinter implements Runnable {
         this.client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
+    }
+
+    public void setImageSize(int imageSize) {
+        this.currentImageSize = imageSize;
     }
 
     public synchronized void setCity(String newCity) {
@@ -99,15 +105,19 @@ public class WeatherPrinter implements Runnable {
         }
     }
 
+    public void updateIcon() {
+        updateWeatherIcon(lastWeatherCondition); // Call the method to update the icon
+    }
+
     private void updateWeatherIcon(String weatherCondition) {
+        lastWeatherCondition = weatherCondition;
         String iconName = mapWeatherConditionToIconName(weatherCondition);
-        URL imageUrl = TimeDemo.class.getResource(iconName);
+        URL imageUrl = Demo.class.getResource(iconName);
         if (imageUrl != null) {
             ImageIcon imgIcon = new ImageIcon(imageUrl);
             Image img = imgIcon.getImage();
 
-            Image scaledImg = img.getScaledInstance(80, 80,  Image.SCALE_SMOOTH);
-            imageLabel.repaint();
+            Image scaledImg = img.getScaledInstance(currentImageSize, currentImageSize, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(scaledImg));
             imageLabel.revalidate();
             imageLabel.repaint();
