@@ -62,8 +62,6 @@ public class TimeDemo extends JDialog {
     }
 
 
-
-
     private void initializeUI() {
         // Setup time label with FlickerFreeLabel
         timeLabel = new FlickerFreeLabel("");
