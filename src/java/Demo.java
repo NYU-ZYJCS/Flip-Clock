@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Demo extends JDialog {
     // Label for displaying the time
