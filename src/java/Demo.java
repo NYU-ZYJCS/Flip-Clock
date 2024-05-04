@@ -33,8 +33,10 @@ public class Demo extends JDialog {
     private final WeatherPrinter weatherPrinter;
     // Time printer instance
     private final TimePrinter timePrinter;
+    private Calendar calendar;
 
     public Demo() {
+        calendar = new Calendar(this);
         // Set the window properties
         setWindowProperties();
 
@@ -47,6 +49,8 @@ public class Demo extends JDialog {
         // Initialize the UI components
         initializeUI();
 
+
+
         // Initialize the time printer and start its thread
         timePrinter = new TimePrinter(timeLabel, location);
         Thread timeThread = new Thread(timePrinter);
@@ -56,6 +60,17 @@ public class Demo extends JDialog {
         weatherPrinter = new WeatherPrinter(weatherLabel, imageLabel, location);
         Thread weatherThread = new Thread(weatherPrinter);
         weatherThread.start();
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    FadeManager.startFadeOut(Demo.this, calendar, true);
+                }
+            }
+        });
+
+        setFocusable(true);
     }
 
     // Set the window properties
