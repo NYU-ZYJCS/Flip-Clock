@@ -27,7 +27,7 @@ The DualView Desktop Widget is a versatile desktop utility designed to enhance p
 
 ## Setup and Usage
 
-To run the DualView Desktop Widget, ensure Java is installed on your system and compile the source files. Execute the `DesktopWidget.java` file to launch the widget. You can customize settings by clicking on the widget icon in the menu bar:
+To run the DualView Desktop Widget, ensure Java is installed on your system and compile the source files. Execute the **`DesktopWidget.java`** file to launch the widget. You can customize settings by clicking on the widget icon in the menu bar:
 
 - **Set Location:** Change the location to receive updated time and weather information.
 - **Preferences:** Customize user settings, such as icon style, font type, font size, and font color.
