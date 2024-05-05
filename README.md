@@ -13,7 +13,7 @@ The DualView Desktop Widget is a versatile desktop utility designed to enhance p
   
 ![FrontViewDesktop](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/FrontViewDesktop.png)
 
-![FrontViewDesktopWithOtherApp](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/FrontViewWithOtherApp.png)
+![FrontViewDesktopWithOtherApp](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/FrontViewWithOtherApp.PNG)
 
 ### Back View
 - **Calendar:** Displays a monthly calendar allowing users to quickly view the current date and navigate through months.
