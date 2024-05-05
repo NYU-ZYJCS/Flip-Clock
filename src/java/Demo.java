@@ -50,7 +50,6 @@ public class Demo extends JDialog {
         initializeUI();
 
 
-
         // Initialize the time printer and start its thread
         timePrinter = new TimePrinter(timeLabel, location);
         Thread timeThread = new Thread(timePrinter);

@@ -2,16 +2,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Locale;
+import java.awt.geom.RoundRectangle2D;
 
 public class Calendar extends JFrame {
-    private Demo demo;  // 引用Demo窗口
-    private Point mouseClickPoint;  // 用于存储鼠标点击位置
+    // Reference to the main demo
+    private Demo demo;
+    // Initial click point
     private Point initialClick;
 
     public Calendar(Demo demo) {
         this.demo = demo;
+        // Initialize the UI
         initializeUI();
+        // Setup mouse listeners
         setupMouseListeners();
+        // Add key listener to close the window
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -20,31 +25,52 @@ public class Calendar extends JFrame {
                 }
             }
         });
-
+        // Set focusable to true for key events
         setFocusable(true);
     }
 
     private void initializeUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(350, 220);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setUndecorated(true);  // Remove window chrome
-        setBackground(new Color(0, 0, 0, 0));  // Set background to transparent
+        customizeFrame();  // Customize the frame
+
+        // Set the window to always be on top
+        setAlwaysOnTop(true);
+        // Set the opacity to 50%
+//        setOpacity(0.5f);
 
         JPanel headerPanel = new JPanel();
-        headerPanel.setOpaque(false);
-        headerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        headerPanel.setLayout(new BorderLayout());
+        headerPanel.setOpaque(true); // Make sure the panel is not opaque
+        headerPanel.setBackground(new Color(64, 64, 64, 192));  // Adjust color with alpha for transparency
+
 
         java.util.Calendar calendar = java.util.Calendar.getInstance();
         JLabel monthLabel = new JLabel(String.format(Locale.US, "%1$tB %1$tY", calendar), JLabel.CENTER);
-        monthLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        monthLabel.setFont(new Font("Dialog", Font.BOLD, 24));
+        monthLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0)); // Top, left, bottom, right
         monthLabel.setForeground(Color.WHITE);
-        headerPanel.add(monthLabel);
+        headerPanel.add(monthLabel, BorderLayout.NORTH);
+
+        // Adding day of week header
+        String[] daysOfWeek = {"S", "M", "T", "W", "T", "F", "S"};
+        JPanel weekDayPanel = new JPanel(new GridLayout(1, 7));
+        weekDayPanel.setOpaque(false);
+        weekDayPanel.setBackground(new Color(64, 64, 64, 192));  // Light gray with transparency
+
+        for (String day : daysOfWeek) {
+            JLabel dayLabel = new JLabel(day, SwingConstants.CENTER);
+            dayLabel.setForeground(Color.WHITE);
+            weekDayPanel.add(dayLabel);
+        }
+        headerPanel.add(weekDayPanel, BorderLayout.CENTER);
 
         JPanel dayPanel = new JPanel(new GridLayout(0, 7)); // 7 days in a week
-        dayPanel.setOpaque(false);
-        dayPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1)); // Grid lines
+        dayPanel.setOpaque(true);
+        dayPanel.setBackground(new Color(64, 64, 64, 192));
 
         // Set to start of the month
         calendar.set(java.util.Calendar.DAY_OF_MONTH, 1);
@@ -54,20 +80,26 @@ public class Calendar extends JFrame {
         // Add empty labels for days before start of month
         for (int i = 1; i < dayOfWeek; i++) {
             JLabel emptyLabel = new JLabel("");
-            emptyLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
             dayPanel.add(emptyLabel);
         }
 
-        // Add day labels for each day
         for (int day = 1; day <= daysInMonth; day++) {
             JLabel dayLabel = new JLabel(String.valueOf(day), SwingConstants.CENTER);
             dayLabel.setForeground(Color.WHITE);
-            dayLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+            JPanel dayContainer = new JPanel(new BorderLayout());
+            dayContainer.add(dayLabel);
+            dayContainer.setOpaque(false); // Ensuring the container itself does not paint a background
+
             if (day == java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)) {
-                dayLabel.setOpaque(true);
-                dayLabel.setBackground(Color.LIGHT_GRAY);
+                RoundedPanel roundedBackground = new RoundedPanel(Color.WHITE, 25); // Adjust corner radius as needed
+                roundedBackground.setLayout(new BorderLayout());
+                roundedBackground.add(dayLabel);
+                dayPanel.add(roundedBackground);
+                dayLabel.setForeground(Color.DARK_GRAY); // Set the text color for highlighted day
+            } else {
+                dayPanel.add(dayContainer);
             }
-            dayPanel.add(dayLabel);
         }
 
         add(headerPanel, BorderLayout.NORTH);
@@ -100,6 +132,11 @@ public class Calendar extends JFrame {
                 repaint();
             }
         });
+    }
 
+    public void customizeFrame() {
+        setUndecorated(true);
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 30, 30));
+        setBackground(new Color(0, 0, 0, 0)); // Set the background to transparent
     }
 }
