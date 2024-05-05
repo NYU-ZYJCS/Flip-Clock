@@ -1,4 +1,4 @@
-# DualView Desktop Widget
+# Flipped Desktop Widget
 
 ## Overview
 
