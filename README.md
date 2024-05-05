@@ -4,19 +4,26 @@
 
 The DualView Desktop Widget is a versatile desktop utility designed to enhance productivity and provide essential information at a glance. The widget operates in two main views: a front view displaying the current time and weather, and a back view featuring a monthly calendar.
 
-![Image](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/calendar.png)
 
 ## Features
 
 ### Front View
 - **Time and Weather Display:** Shows the current time and weather information for a specified location. Users can input a different location to get real-time updates for that area.
 - **Customizable Appearance:** Users can personalize the widget's appearance by choosing from various font sizes, colors, and types to fit their desktop aesthetic. Additionally, users have the option to switch between different styles of the menu bar icon to better match their personal preferences or desktop theme.
+  
+![FrontViewDesktop](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/FrontViewDesktop.png)
+
+![FrontViewDesktopWithOtherApp](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/FrontViewWithOtherApp.png)
 
 ### Back View
 - **Calendar:** Displays a monthly calendar allowing users to quickly view the current date and navigate through months.
+  
+![BackViewDesktop](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/BackViewDesktop.png)
+
+![BackViewWithOtherApp](https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/BackViewWithOtherApp.png)
 
 ### User Interactions
-- **Spacebar Toggle:** Users can toggle between the front view (time and weather) and the back view (calendar) by pressing the spacebar.
+- **Spacebar Flip:** Users can flip between the front view (time and weather) and the back view (calendar) by pressing the spacebar.
 
 ## Files Description
 
