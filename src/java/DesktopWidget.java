@@ -67,7 +67,7 @@ public class DesktopWidget extends JDialog {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    FadeManager.startFadeOut(DesktopWidget.this, calendarPrinter, true);
+                    FlipManager.startFadeOut(DesktopWidget.this, calendarPrinter, true);
                 }
             }
         });

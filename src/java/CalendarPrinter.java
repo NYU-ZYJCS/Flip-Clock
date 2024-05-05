@@ -24,7 +24,7 @@ public class CalendarPrinter extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    FadeManager.startFadeOut(CalendarPrinter.this, desktopWidget, true);
+                    FlipManager.startFadeOut(CalendarPrinter.this, desktopWidget, true);
                 }
             }
         });

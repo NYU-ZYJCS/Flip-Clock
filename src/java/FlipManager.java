@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// FadeManager class to handle fading in and out of windows
-public class FadeManager {
+// FlipManager class to handle fading in and out of windows
+public class FlipManager {
     // Fade out the window
     public static void startFadeOut(Window frameToHide, Window frameToShow, boolean fadeInAfterFadeOut) {
         // Set the location when starting to fade out
