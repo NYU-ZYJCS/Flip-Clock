@@ -4,7 +4,7 @@
 
 The DualView Desktop Widget is a versatile desktop utility designed to enhance productivity and provide essential information at a glance. The widget operates in two main views: a front view displaying the current time and weather, and a back view featuring a monthly calendar.
 
-![Image text] https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/calendar.png
+![Image text] (https://github.com/NYU-ZYJCS/Flip-Clock/blob/main/img/calendar.png)
 
 ## Features
 
