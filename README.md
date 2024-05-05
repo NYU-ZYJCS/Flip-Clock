@@ -31,7 +31,7 @@ The DualView Desktop Widget is a versatile desktop utility designed to enhance p
 - **`WeatherPrinter.java`:** Manages the retrieval and display of weather information.
 - **`TimePrinter.java`:** Handles the display of current time based on the user's specified location.
 - **`CalendarPrinter.java`:** Provides the functionality to display a monthly calendar and navigate through dates.
-- **`FadeManager.java`:** Manages transitions and fade animations between the front and back views of the widget.
+- **`FlipManager.java`:** Handles the flipping between the front and the back views of the widget.
 - **`WindowManager.java`:** Handles the window positions for front and back views.
 
 ## Setup and Usage
